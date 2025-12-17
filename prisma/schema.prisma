@@ -7,18 +7,80 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// 1. ADMIN (Tetap, campuran Indo/Inggris sesuai request awal)
 model Admin {
   id        Int      @id @default(autoincrement())
-  username  String   @unique // Gunakan username/nip untuk admin
-  password  String   // Akan di-hash
+  username  String   @unique
+  password  String
   nama      String
   createdAt DateTime @default(now())
+  
+  events    Event[]
+
+  @@map("admin")
 }
 
+// 2. MITRA (Pusat Data: Login + Peta)
 model Mitra {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String   // Akan di-hash
-  namaUsaha String
-  createdAt DateTime @default(now())
+  id              Int      @id @default(autoincrement())
+  email           String   @unique
+  password        String
+  namaUsaha       String   // Sesuai kode awal Anda
+  
+  // Data Tambahan untuk Peta & Profil
+  deskripsi       String?  @db.Text
+  alamat          String?
+  kecamatan       String?
+  noHp            String?
+  kategori        String?  // Kuliner, Fashion, dll
+  
+  // Lokasi Peta
+  latitude        Float?
+  longitude       Float?
+  
+  fotoProfil      String?
+  statusVerifikasi Boolean @default(false) // Pengganti is_verified
+  statusBuka      Boolean  @default(true)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  produk          Produk[] // Relasi ke Produk
+
+  @@map("mitra")
+}
+
+// 3. PRODUK (Bahasa Indonesia)
+model Produk {
+  id          Int      @id @default(autoincrement())
+  namaProduk  String
+  harga       Decimal  @db.Decimal(10, 2)
+  deskripsi   String?
+  fotoProduk  String?
+  
+  mitraId     Int
+  mitra       Mitra    @relation(fields: [mitraId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("produk")
+}
+
+// 4. EVENT
+model Event {
+  id          Int      @id @default(autoincrement())
+  judul       String
+  deskripsi   String   @db.Text
+  tanggal     DateTime
+  lokasi      String
+  bannerUrl   String?
+  
+  adminId     Int
+  admin       Admin    @relation(fields: [adminId], references: [id])
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("event")
 }
