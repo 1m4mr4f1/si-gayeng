@@ -1,5 +1,5 @@
 import { getSession } from "@/lib/auth";
-import { prisma } from "@/lib/prima";
+import { prisma } from "@/lib/prisma";
 import { MapPin, Package, Star } from "lucide-react";
 
 export default async function DashboardMitraPage() {

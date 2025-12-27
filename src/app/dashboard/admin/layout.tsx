@@ -1,7 +1,7 @@
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Users, LayoutDashboard, LogOut } from "lucide-react";
+import { Users, LayoutDashboard, LogOut, Map } from "lucide-react";
 import { logoutAction } from "@/actions/authAction";
 
 export default async function AdminLayout({
@@ -27,14 +27,25 @@ export default async function AdminLayout({
         </div>
 
         <nav className="flex-1 p-4 space-y-2">
+          
+          {/* Menu 1: Dashboard Utama */}
           <Link href="/dashboard/admin" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
             <LayoutDashboard size={20} />
             Dashboard
           </Link>
+
+          {/* Menu 2: Regional Monitoring (BARU) */}
+          <Link href="/dashboard/admin/monitoring" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
+            <Map size={20} />
+            Regional Monitoring
+          </Link>
+
+          {/* Menu 3: Kelola Data Mitra */}
           <Link href="/dashboard/admin/mitra" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
             <Users size={20} />
-            Kelola Mitra
+            Manage MSMEs (Mitra)
           </Link>
+
         </nav>
 
         <div className="p-4 border-t border-slate-800">

@@ -27,14 +27,14 @@ export default function Hero() {
           {/* Tombol Action */}
           <div className="flex flex-wrap gap-4 pt-4">
             <Link 
-              href="/market" 
+              href="/#peta-umkm" 
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded shadow-lg hover:shadow-green-500/30 transition-all transform hover:-translate-y-1"
             >
               Cari di Peta
             </Link>
             
             <Link 
-              href="/LoginMitra" 
+              href="/RegisterMitra" 
               className="bg-transparent border-2 border-gray-300 hover:border-green-500 text-gray-600 hover:text-green-600 font-bold py-3 px-8 rounded transition-all"
             >
               Daftar Jadi Mitra

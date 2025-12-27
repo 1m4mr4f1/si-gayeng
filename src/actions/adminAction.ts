@@ -1,6 +1,6 @@
 'use server'
 
-import { prisma } from "@/lib/prima";
+import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/auth"; // Pastikan auth helper Anda bisa cek role admin
 

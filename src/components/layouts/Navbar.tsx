@@ -20,7 +20,7 @@ export default function Navbar() {
         {/* 2. MENU LINKS (Tengah) - Hidden di Mobile */}
         <div className="hidden md:flex items-center space-x-8">
           <Link href="/" className="text-green-600 font-semibold text-sm">Beranda</Link>
-          <Link href="/market" className="text-gray-600 hover:text-green-600 font-medium text-sm transition">Peta UMKM</Link>
+          <Link href="/#peta-umkm" className="text-gray-600 hover:text-green-600 font-medium text-sm transition">Peta UMKM</Link>
           <Link href="/kategori" className="text-gray-600 hover:text-green-600 font-medium text-sm transition">Kategori</Link>
           <Link href="/event" className="text-gray-600 hover:text-green-600 font-medium text-sm transition">Event</Link>
           <Link href="/kontak" className="text-gray-600 hover:text-green-600 font-medium text-sm transition">Kontak</Link>
@@ -29,7 +29,7 @@ export default function Navbar() {
         {/* 3. BUTTON ACTION (Kanan) */}
         <div className="hidden md:block">
           <Link 
-            href="/LoginMitra" 
+            href="/RegisterMitra" 
             className="bg-green-500 hover:bg-green-600 text-white text-sm font-semibold px-6 py-2.5 rounded-md transition-all shadow-md hover:shadow-lg"
           >
             Gabung Mitra

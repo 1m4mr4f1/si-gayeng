@@ -1,5 +1,5 @@
 import { getSession } from "@/lib/auth";
-import { prisma } from "@/lib/prima"; // PERBAIKAN TYPO: prima -> prisma
+import { prisma } from "@/lib/prisma"; // PERBAIKAN TYPO: prima -> prisma
 import { createProductAction, deleteProductAction } from "@/actions/mitraAction";
 import { Plus, Trash2, PackageOpen } from "lucide-react";
 

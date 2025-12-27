@@ -7,7 +7,7 @@ export default async function MapPreview() {
   const mapData = await getMapData();
 
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section id="peta-umkm" className=" py-16 md:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         
         {/* Header Section */}

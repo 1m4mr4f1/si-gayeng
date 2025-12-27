@@ -1,31 +1,22 @@
 'use client'
 
-import { useState, useMemo, useRef } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { updateProfilAction } from '@/actions/mitraAction';
 import { Save, MapPin } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet'; // Import L untuk akses L.icon
 
-// Import Peta Client-Side Only
+// --- HAPUS IMPORT L GLOBAL INI ---
+// import L from 'leaflet'; 
+
+// Import Komponen Peta Client-Side Only
 const MapContainer = dynamic(() => import('react-leaflet').then(m => m.MapContainer), { ssr: false });
 const TileLayer = dynamic(() => import('react-leaflet').then(m => m.TileLayer), { ssr: false });
 const Marker = dynamic(() => import('react-leaflet').then(m => m.Marker), { ssr: false });
 
-// --- PERBAIKAN: DEFINISI ICON MANUAL ---
-// Kita ambil gambar marker langsung dari CDN agar pasti muncul
-const markerIcon = new L.Icon({
-  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-  iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
-
 // Helper Component untuk Handle Drag
-function DraggableMarker({ pos, setPos }: { pos: [number, number], setPos: (p: [number, number]) => void }) {
+// Kita tambahkan prop 'icon' agar icon dinamis bisa masuk
+function DraggableMarker({ pos, setPos, icon }: { pos: [number, number], setPos: (p: [number, number]) => void, icon: any }) {
   const markerRef = useRef<any>(null);
   const eventHandlers = useMemo(() => ({
     dragend() {
@@ -37,21 +28,44 @@ function DraggableMarker({ pos, setPos }: { pos: [number, number], setPos: (p: [
     },
   }), [setPos]);
 
-  // Tambahkan prop icon={markerIcon} di sini
-  return <Marker draggable={true} eventHandlers={eventHandlers} position={pos} ref={markerRef} icon={markerIcon} />;
+  return <Marker draggable={true} eventHandlers={eventHandlers} position={pos} ref={markerRef} icon={icon} />;
 }
 
 export default function EditProfilForm({ mitra }: { mitra: any }) {
-  // Default ke Semarang jika null
+  // 1. State untuk Lokasi (Default Semarang jika null)
   const defaultPos: [number, number] = [mitra.latitude || -6.9932, mitra.longitude || 110.4203];
   
-  // Pastikan position valid (tidak null/NaN) saat inisialisasi state
   const [position, setPosition] = useState<[number, number]>(() => {
      if (mitra.latitude && mitra.longitude) {
          return [parseFloat(mitra.latitude), parseFloat(mitra.longitude)];
      }
      return [-6.9932, 110.4203];
   });
+
+  // 2. State untuk Icon Leaflet (Agar tidak error saat SSR)
+  const [markerIcon, setMarkerIcon] = useState<any>(null);
+
+  // 3. useEffect: Load Leaflet & Buat Icon hanya di Browser
+  useEffect(() => {
+    (async function initLeaflet() {
+        // Import L secara manual di sini (Lazy Load)
+        const L = (await import('leaflet')).default;
+        
+        // Buat Icon menggunakan L yang baru diimport
+        const myIcon = new L.Icon({
+            iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+            iconRetinaUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png',
+            shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        // Simpan ke state agar komponen bisa re-render menampilkan marker
+        setMarkerIcon(myIcon);
+    })();
+  }, []);
 
   const inputClass = "w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-green-500 outline-none bg-white text-slate-900 placeholder:text-slate-400";
 
@@ -103,13 +117,19 @@ export default function EditProfilForm({ mitra }: { mitra: any }) {
         </h3>
         <p className="text-sm text-slate-500 mb-4">Geser Pin biru ke lokasi toko Anda yang sebenarnya.</p>
         
+        {/* Hidden Input untuk kirim data ke Server Action */}
         <input type="hidden" name="latitude" value={position[0]} />
         <input type="hidden" name="longitude" value={position[1]} />
 
         <div className="h-[400px] w-full rounded-lg overflow-hidden border-2 border-slate-200 relative isolate z-0">
             <MapContainer center={defaultPos} zoom={15} scrollWheelZoom={false} className="h-full w-full z-0">
                 <TileLayer attribution='&copy; OpenStreetMap' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                <DraggableMarker pos={position} setPos={setPosition} />
+                
+                {/* PENTING: Render Marker HANYA jika markerIcon sudah terisi (tidak null) */}
+                {markerIcon && (
+                    <DraggableMarker pos={position} setPos={setPosition} icon={markerIcon} />
+                )}
+
             </MapContainer>
         </div>
         <p className="text-xs text-slate-400 mt-2">Koordinat: {position[0]}, {position[1]}</p>

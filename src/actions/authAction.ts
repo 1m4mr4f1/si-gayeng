@@ -1,6 +1,6 @@
 'use server'
 
-import { prisma } from "@/lib/prima"; // PERBAIKAN: Pastikan ejaan 'prisma' benar
+import { prisma } from "@/lib/prisma"; // PERBAIKAN: Pastikan ejaan 'prisma' benar
 import bcrypt from "bcryptjs";
 import { SignJWT } from "jose";
 import { cookies } from "next/headers";

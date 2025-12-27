@@ -1,10 +1,29 @@
-import { prisma } from "@/lib/prima";
+import { prisma } from "@/lib/prisma";
 import { verifyMitraAction, unverifyMitraAction } from "@/actions/adminAction";
 import { CheckCircle, Search } from "lucide-react";
-import DeleteMitraButton from "@/app/dashboard/admin/DeleteMitraButton"; // Import Komponen Baru
+import DeleteMitraButton from "@/components/admin/DeleteMitraButton"; // Pastikan path import benar
+import SearchInput from "@/components/admin/SearchInput";
 
-export default async function KelolaMitraPage() {
+// 1. Definisikan Tipe Props (Next.js 15 mengharuskan Promise)
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function KelolaMitraPage(props: PageProps) {
+  // 2. AWAIT searchParams sebelum digunakan
+  const searchParams = await props.searchParams;
+  
+  // 3. Ambil query dengan aman (casting ke string)
+  const query = typeof searchParams.query === 'string' ? searchParams.query : "";
+
+  // Query Database dengan Filter
   const mitraList = await prisma.mitra.findMany({
+    where: {
+      OR: [
+        { namaUsaha: { contains: query } },
+        { email: { contains: query } }
+      ]
+    },
     orderBy: { createdAt: 'desc' },
     include: {
         _count: { select: { produk: true } }
@@ -19,8 +38,10 @@ export default async function KelolaMitraPage() {
             <h2 className="text-2xl font-bold text-slate-800">Kelola Mitra UMKM</h2>
             <p className="text-slate-500 text-sm">Verifikasi pendaftaran mitra baru agar muncul di peta.</p>
         </div>
-        <div className="bg-white px-4 py-2 rounded-lg border shadow-sm flex items-center gap-2 text-slate-400 text-sm">
-            <Search size={16}/> Filter segera hadir...
+        
+        {/* Search Input Component */}
+        <div className="bg-white rounded-lg shadow-sm">
+            <SearchInput />
         </div>
       </div>
 
@@ -61,7 +82,6 @@ export default async function KelolaMitraPage() {
                         </td>
                         <td className="px-6 py-4">
                             <div className="flex justify-center gap-2">
-                                {/* Tombol Approve / Suspend (Masih aman di Server Component karena tidak ada onClick/onSubmit) */}
                                 {m.statusVerifikasi ? (
                                     <form action={unverifyMitraAction}>
                                         <input type="hidden" name="id" value={m.id} />
@@ -78,7 +98,6 @@ export default async function KelolaMitraPage() {
                                     </form>
                                 )}
 
-                                {/* Tombol Hapus (Dipindah ke Client Component) */}
                                 <DeleteMitraButton id={m.id} />
                             </div>
                         </td>
@@ -87,8 +106,8 @@ export default async function KelolaMitraPage() {
                 
                 {mitraList.length === 0 && (
                     <tr>
-                        <td colSpan={5} className="p-8 text-center text-slate-400 italic">
-                            Belum ada mitra yang mendaftar.
+                        <td colSpan={5} className="p-12 text-center text-slate-400 italic bg-slate-50/50">
+                            {query ? `Tidak ditemukan mitra dengan kata kunci "${query}"` : "Belum ada mitra yang mendaftar."}
                         </td>
                     </tr>
                 )}
