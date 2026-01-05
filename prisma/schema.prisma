@@ -1,3 +1,5 @@
+// schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,7 +9,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// 1. ADMIN (Tetap, campuran Indo/Inggris sesuai request awal)
+// 1. ADMIN
 model Admin {
   id        Int      @id @default(autoincrement())
   username  String   @unique
@@ -20,37 +22,37 @@ model Admin {
   @@map("admin")
 }
 
-// 2. MITRA (Pusat Data: Login + Peta)
+// 2. MITRA
 model Mitra {
-  id              Int      @id @default(autoincrement())
-  email           String   @unique
-  password        String
-  namaUsaha       String   // Sesuai kode awal Anda
+  id               Int      @id @default(autoincrement())
+  email            String   @unique
+  password         String
+  namaUsaha        String   
   
-  // Data Tambahan untuk Peta & Profil
-  deskripsi       String?  @db.Text
-  alamat          String?
-  kecamatan       String?
-  noHp            String?
-  kategori        String?  // Kuliner, Fashion, dll
+  // Data Profil & Lokasi
+  deskripsi        String?  @db.Text
+  alamat           String?
+  kecamatan        String?
+  noHp             String?
+  kategori         String?  // Kuliner, Fashion, Kerajinan
   
-  // Lokasi Peta
-  latitude        Float?
-  longitude       Float?
+  latitude         Float?
+  longitude        Float?
   
-  fotoProfil      String?
-  statusVerifikasi Boolean @default(false) // Pengganti is_verified
-  statusBuka      Boolean  @default(true)
+  fotoProfil       String?
+  statusVerifikasi Boolean  @default(false) 
+  statusBuka       Boolean  @default(true)
   
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
-  produk          Produk[] // Relasi ke Produk
+  produk           Produk[]      
+  sertifikasi      Sertifikasi[] // Relasi One-to-Many ke Sertifikasi
 
   @@map("mitra")
 }
 
-// 3. PRODUK (Bahasa Indonesia)
+// 3. PRODUK
 model Produk {
   id          Int      @id @default(autoincrement())
   namaProduk  String
@@ -83,4 +85,27 @@ model Event {
   updatedAt   DateTime @updatedAt
 
   @@map("event")
+}
+
+// 5. SERTIFIKASI (Pengajuan Legalitas)
+model Sertifikasi {
+  id              Int      @id @default(autoincrement())
+  jenis           String   // Contoh: "PIRT", "HALAL", "BPOM"
+  status          String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  
+  // 1. Input dari Mitra (Saat Mengajukan)
+  dokumenMitra    String?  // URL foto bukti pengajuan/dokumen pendukung
+  
+  // 2. Input dari Admin (Saat Verifikasi/Approval)
+  nomorSertifikat String?  // PENTING: Untuk menyimpan nomornya (misal: ID33110000)
+  sertifikatResmi String?  // URL foto sertifikat fisik (jika ada)
+  catatan         String?  // Alasan jika DITOLAK atau info tambahan
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  mitraId         Int
+  mitra           Mitra    @relation(fields: [mitraId], references: [id], onDelete: Cascade)
+
+  @@map("sertifikasi")
 }
