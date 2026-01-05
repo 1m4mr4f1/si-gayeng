@@ -1,7 +1,9 @@
 import { jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 
-const SECRET_KEY = new TextEncoder().encode(process.env.AUTH_SECRET);
+// KITA PERTAHANKAN LOGIKA INI AGAR STABIL
+const SECRET_ENV = process.env.AUTH_SECRET || "rahasia_default_debug_123456";
+const SECRET_KEY = new TextEncoder().encode(SECRET_ENV);
 
 export async function getSession() {
   const cookieStore = await cookies();
@@ -13,7 +15,7 @@ export async function getSession() {
     const { payload } = await jwtVerify(token, SECRET_KEY, {
       algorithms: ['HS256'],
     });
-    return payload; // Berisi { id, role, name, ... }
+    return payload; 
   } catch (error) {
     return null;
   }

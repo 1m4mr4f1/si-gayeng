@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prima";
-import { umkmData } from "@/data/dummyUmkm"; // Pastikan file ini ada sesuai langkah sebelumnya
+import { prisma } from "@/lib/prisma";
+import { umkmData } from "@/data/dummyUmkm"; 
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
@@ -10,7 +10,10 @@ export async function GET() {
     
     await prisma.admin.upsert({
       where: { username: "adminsemarang" },
-      update: {}, // Jika sudah ada, tidak ada yang diubah
+      // PERBAIKAN: Paksa update password jika admin sudah ada
+      update: {
+        password: hashedAdminPass, 
+      }, 
       create: {
         username: "adminsemarang",
         password: hashedAdminPass,
@@ -18,20 +21,19 @@ export async function GET() {
       },
     });
 
-    // --- 2. SEED MITRA (LOOPING DATA DUMMY UNTUK PETA) ---
-    const hashedMitraPass = await bcrypt.hash("123456", 10); // Password default semua mitra
+    // --- 2. SEED MITRA (LOOPING DATA DUMMY) ---
+    const hashedMitraPass = await bcrypt.hash("123456", 10); 
     
     let count = 0;
     
-    // Kita loop data dummy yang banyak itu agar masuk ke database
     for (const data of umkmData) {
-      // Buat email unik palsu berdasarkan ID
       const emailDummy = `mitra${data.id}@sigayeng.com`;
       
       await prisma.mitra.upsert({
         where: { email: emailDummy },
+        // PERBAIKAN: Paksa update password & lokasi jika mitra sudah ada
         update: {
-            // Jika data sudah ada, update lokasi & infonya saja
+            password: hashedMitraPass, // Reset password jadi 123456
             latitude: data.lat,
             longitude: data.lng,
             kategori: data.kategori,
@@ -41,18 +43,12 @@ export async function GET() {
         create: {
             email: emailDummy,
             password: hashedMitraPass,
-            
-            // Mapping Data Dummy ke Schema Database (Bahasa Indonesia)
             namaUsaha: data.nama,
             deskripsi: data.deskripsi,
             kategori: data.kategori,
-            
-            // Koordinat Peta
             latitude: data.lat,
             longitude: data.lng,
-            
-            // Data Default
-            statusVerifikasi: true, // Wajib TRUE agar muncul di peta
+            statusVerifikasi: true, 
             statusBuka: true,
             noHp: "08123456789",
             alamat: "Semarang, Jawa Tengah"
@@ -62,8 +58,8 @@ export async function GET() {
     }
 
     return NextResponse.json({ 
-      message: `SEEDING SUKSES! Admin & ${count} Mitra berhasil disimpan ke database.`,
-      info: "Silakan coba login Mitra dengan email: mitra1@sigayeng.com / pass: 123456" 
+      message: `SEEDING SUKSES! Password Admin di-reset jadi 'admin123' & ${count} Mitra di-reset jadi '123456'.`,
+      info: "Silakan login sekarang!" 
     });
 
   } catch (error) {

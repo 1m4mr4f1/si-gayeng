@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prima";
+import { prisma } from "@/lib/prisma";
 
 // Cari Admin berdasarkan Username
 export async function findAdminByUsername(username: string) {
