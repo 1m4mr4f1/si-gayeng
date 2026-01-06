@@ -16,14 +16,28 @@ export default function Navbar() {
             <span className="text-[10px] text-gray-500 tracking-wider">UMKM SEMARANG</span>
           </div>
         </div>
-
-        {/* 2. MENU LINKS (Tengah) - Hidden di Mobile */}
+{/* 2. MENU LINKS (Tengah) - Hidden di Mobile */}
         <div className="hidden md:flex items-center space-x-8">
-          <Link href="/" className="text-green-600 font-semibold text-sm">Beranda</Link>
-          <Link href="/#peta-umkm" className="text-gray-600 hover:text-green-600 font-medium text-sm transition">Peta UMKM</Link>
-          <Link href="/kategori" className="text-gray-600 hover:text-green-600 font-medium text-sm transition">Kategori</Link>
-          <Link href="/event" className="text-gray-600 hover:text-green-600 font-medium text-sm transition">Event</Link>
-          <Link href="/kontak" className="text-gray-600 hover:text-green-600 font-medium text-sm transition">Kontak</Link>
+          <Link href="/" className="text-green-600 font-semibold text-sm">
+            Beranda
+          </Link>
+          
+          {/* Gunakan /#id agar scroll ke section terkait */}
+          <Link href="/#peta-umkm" className="text-gray-600 hover:text-green-600 font-medium text-sm transition">
+            Peta UMKM
+          </Link>
+          
+          <Link href="/#kategori" className="text-gray-600 hover:text-green-600 font-medium text-sm transition">
+            Kategori
+          </Link>
+          
+          <Link href="/#event" className="text-gray-600 hover:text-green-600 font-medium text-sm transition">
+            Event
+          </Link>
+          
+          <Link href="/#kontak" className="text-gray-600 hover:text-green-600 font-medium text-sm transition">
+            Kontak
+          </Link>
         </div>
 
         {/* 3. BUTTON ACTION (Kanan) */}
