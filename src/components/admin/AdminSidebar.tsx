@@ -25,11 +25,7 @@ export default function AdminSidebar() {
       url: '/dashboard/admin/mitra', 
       icon: Users 
     },
-    { 
-      name: 'Validasi Sertifikasi', 
-      url: '/dashboard/admin/sertifikasi', 
-      icon: FileCheck 
-    },
+    
   ];
 
   return (

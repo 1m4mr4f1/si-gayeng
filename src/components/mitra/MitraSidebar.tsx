@@ -38,11 +38,7 @@ export default function MitraSidebar() {
           <span className="text-sm">Profil Toko</span>
         </Link>
 
-        {/* --- MENU BARU DISINI --- */}
-        <Link href="/dashboard/mitra/legalitas" className={`flex items-center gap-3 px-6 py-3 transition-all ${isActive('/dashboard/mitra/legalitas')}`}>
-          <span>📜</span>
-          <span className="text-sm">Legalitas (Halal/BPOM)</span>
-        </Link>
+       
 
         <Link href="/dashboard/mitra/produk" className={`flex items-center gap-3 px-6 py-3 transition-all ${isSubActive('/dashboard/mitra/produk')}`}>
           <span>📦</span>

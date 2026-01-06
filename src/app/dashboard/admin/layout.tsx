@@ -1,8 +1,7 @@
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-// Tambahkan FileCheck ke import icon
-import { Users, LayoutDashboard, LogOut, Map, FileCheck } from "lucide-react"; 
+import { Users, LayoutDashboard, LogOut, Map } from "lucide-react";
 import { logoutAction } from "@/actions/authAction";
 
 export default async function AdminLayout({
@@ -35,7 +34,7 @@ export default async function AdminLayout({
             Dashboard
           </Link>
 
-          {/* Menu 2: Regional Monitoring */}
+          {/* Menu 2: Regional Monitoring (BARU) */}
           <Link href="/dashboard/admin/monitoring" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
             <Map size={20} />
             Regional Monitoring
@@ -45,12 +44,6 @@ export default async function AdminLayout({
           <Link href="/dashboard/admin/mitra" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
             <Users size={20} />
             Manage MSMEs (Mitra)
-          </Link>
-
-          {/* Menu 4: Validasi Sertifikasi (BARU) */}
-          <Link href="/dashboard/admin/sertifikasi" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
-            <FileCheck size={20} />
-            Validasi Sertifikasi
           </Link>
 
         </nav>

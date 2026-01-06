@@ -91,16 +91,13 @@ model Event {
 model Sertifikasi {
   id              Int      @id @default(autoincrement())
   jenis           String   // Contoh: "PIRT", "HALAL", "BPOM"
-  status          String   @default("PENDING") // PENDING, APPROVED, REJECTED
-  
-  // 1. Input dari Mitra (Saat Mengajukan)
-  dokumenMitra    String?  // URL foto bukti pengajuan/dokumen pendukung
-  
-  // 2. Input dari Admin (Saat Verifikasi/Approval)
-  nomorSertifikat String?  // PENTING: Untuk menyimpan nomornya (misal: ID33110000)
-  sertifikatResmi String?  // URL foto sertifikat fisik (jika ada)
-  catatan         String?  // Alasan jika DITOLAK atau info tambahan
-  
+  status          String   @default("PENDING") // PENDING, PROSES, SELESAI, DITOLAK
+
+  dokumenMitra    String?
+  nomorSertifikat String?
+  sertifikatResmi String?
+  catatan         String?
+
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
